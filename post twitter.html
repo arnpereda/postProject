@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitter Clone</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif;
+            background-color: #15202B;
+            color: #fff;
+            line-height: 1.4;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 275px;
+            padding: 0 12px;
+            height: 100vh;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sidebar-logo {
+            font-size: 28px;
+            font-weight: bold;
+            padding: 12px;
+            width: fit-content;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+
+        .sidebar-logo:hover {
+            background-color: rgba(239, 243, 244, 0.1);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .menu-item {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            padding: 12px 16px;
+            border-radius: 9999px;
+            text-align: left;
+            width: fit-content;
+            cursor: pointer;
+            font-weight: normal;
+            transition: background-color 0.2s;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(239, 243, 244, 0.1);
+        }
+
+        .menu-item.active {
+            font-weight: bold;
+        }
+
+        .tweet-btn {
+            background-color: #1D9BF0;
+            color: white;
+            padding: 16px 32px;
+            font-size: 17px;
+            border: none;
+            cursor: pointer;
+            border-radius: 9999px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+            margin-top: 12px;
+        }
+
+        .tweet-btn:hover {
+            background-color: #1A8CD8;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 275px;
+            border-left: 1px solid #2F3336;
+            border-right: 1px solid #2F3336;
+            min-height: 100vh;
+            width: 600px;
+        }
+
+        .post-input {
+            padding: 16px;
+            border-bottom: 1px solid #2F3336;
+        }
+
+        .post-input-header {
+            display: flex;
+            gap: 12px;
+        }
+
+        .profile-pic {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px 0;
+            border: none;
+            background-color: transparent;
+            color: white;
+            font-size: 20px;
+            resize: none;
+            margin-top: 12px;
+        }
+
+        textarea:focus {
+            outline: none;
+        }
+
+        .icons-section {
+            display: flex;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid #2F3336;
+            margin-top: 12px;
+        }
+
+        .icon-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            color: #1D9BF0;
+            margin-right: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .icon-btn:hover {
+            background-color: rgba(29, 155, 240, 0.1);
+        }
+
+        /* Posts Feed */
+        .post {
+            padding: 16px;
+            border-bottom: 1px solid #2F3336;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        .post:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .post-header {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 4px;
+        }
+
+        .user-info {
+            display: flex;
+            gap: 4px;
+            align-items: baseline;
+        }
+
+        .name {
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .username {
+            color: #71767B;
+        }
+
+        .post-content {
+            margin-left: 60px;
+            font-size: 15px;
+            margin-bottom: 12px;
+            word-wrap: break-word;
+        }
+
+        .post-timestamp {
+            color: #71767B;
+            font-size: 15px;
+            margin-left: 60px;
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            max-width: 425px;
+            margin-left: 60px;
+            margin-top: 12px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: #71767B;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 5px 8px;
+            border-radius: 9999px;
+        }
+
+        .action-btn:hover {
+            color: #1D9BF0;
+            background-color: rgba(29, 155, 240, 0.1);
+        }
+
+        /* Right Sidebar */
+        .right-sidebar {
+            margin-left: 32px;
+            width: 350px;
+            padding: 12px;
+            position: sticky;
+            top: 0;
+        }
+
+        .search-bar {
+            position: sticky;
+            top: 0;
+            padding: 12px 0;
+            background-color: #15202B;
+            z-index: 1;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 9999px;
+            border: 1px solid transparent;
+            background-color: #273340;
+            color: white;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            background-color: #15202B;
+            border-color: #1D9BF0;
+        }
+
+        .trends-section, .who-to-follow {
+            background-color: #1E2732;
+            border-radius: 16px;
+            margin-top: 16px;
+        }
+
+        .section-header {
+            padding: 12px 16px;
+            font-size: 20px;
+            font-weight: bold;
+            border-bottom: 1px solid #2F3336;
+        }
+
+        .trend-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .trend-item:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .trend-hashtag {
+            font-weight: bold;
+            font-size: 15px;
+            display: block;
+        }
+
+        .tweet-count {
+            color: #71767B;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="sidebar-logo">𝕏</div>
+        <ul class="sidebar-menu">
+            <li><button class="menu-item active">Home</button></li>
+            <li><button class="menu-item">Explore</button></li>
+            <li><button class="menu-item">Notifications</button></li>
+            <li><button class="menu-item">Messages</button></li>
+            <li><button class="menu-item">Bookmarks</button></li>
+            <li><button class="menu-item">Lists</button></li>
+            <li><button class="menu-item">Profile</button></li>
+            <li><button class="menu-item">More</button></li>
+        </ul>
+        <button class="tweet-btn">Post</button>
+    </nav>
+
+    <main class="main-content">
+        <div class="post-input">
+            <div class="post-input-header">
+                <img src="/api/placeholder/48/48" alt="Profile picture" class="profile-pic">
+                <textarea id="post-textarea" placeholder="What's happening?"></textarea>
+            </div>
+            <div class="icons-section">
+                <button class="icon-btn">📷</button>
+                <button class="icon-btn">GIF</button>
+                <button class="icon-btn">📊</button>
+                <button class="icon-btn">😊</button>
+                <button id="post-button" class="tweet-btn" style="margin-left: auto;">Post</button>
+            </div>
+        </div>
+
+        <div id="posts-feed" class="posts-feed">
+            <!-- Posts will be added here dynamically -->
+        </div>
+    </main>
+
+    <aside class="right-sidebar">
+        <div class="search-bar">
+            <input type="text" placeholder="Search" class="search-input">
+        </div>
+
+        <section class="trends-section">
+            <h2 class="section-header">Trends for you</h2>
+            <div class="trend-item">
+                <span class="trend-hashtag">#WebDevelopment</span>
+                <span class="tweet-count">5.3K posts</span>
+            </div>
+            <div class="trend-item">
+                <span class="trend-hashtag">#TwitterClone</span>
+                <span class="tweet-count">2.1M posts</span>
+            </div>
+        </section>
+    </aside>
+
+    <script>
+        // Get DOM elements
+        const postTextarea = document.getElementById('post-textarea');
+        const postButton = document.getElementById('post-button');
+        const postsFeed = document.getElementById('posts-feed');
+
+        // Function to format date
+        function formatDate(date) {
+            const hours = date.getHours();
+            const minutes = date.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            const formattedHours = hours % 12 || 12;
+            const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+            
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const month = months[date.getMonth()];
+            const day = date.getDate();
+            const year = date.getFullYear();
+
+            return `${formattedHours}:${formattedMinutes} ${ampm} · ${month} ${day}, ${year}`;
+        }
+
+        // Function to create a new post
+        function createPost(content) {
+            const post = document.createElement('article');
+            post.className = 'post';
+            
+            const currentDate = new Date();
+            const formattedDate = formatDate(currentDate);
+
+            post.innerHTML = `
+                <div class="post-header">
+                    <img src="/api/placeholder/48/48" alt="Profile picture" class="profile-pic">
+                    <div class="user-info">
+                        <span class="name">John Doe</span>
+                        <span class="username">@johndoe</span>
+                    </div>
+                </div>
+                <p class="post-content">${content}</p>
+                <span class="post-timestamp">${formattedDate}</span>
+                <div class="post-actions">
+                    <button class="action-btn">💬 0</button>
+                    <button class="action-btn">🔁 0</button>
+                    <button class="action-btn">❤️ 0</button>
+                    <button class="action-btn">📊 0</button>
+                </div>
+            `;
+
+            return post;
+        }
+
+        // Event listener for post button
+        postButton.addEventListener('click', () => {
+            const content = postTextarea.value.trim();
+            
+            // Check if content is not empty
+            if (content !== '') {
+                // Create and add the new post
+                const newPost = createPost(content);
+                
+                // Add post to the beginning of the feed
+                if (postsFeed.firstChild) {
+                    postsFeed.insertBefore(newPost, postsFeed.firstChild);
+                } else {
+                    postsFeed.appendChild(newPost);
+                }
+                
+                // Clear the textarea
+                postTextarea.value = '';
+                
+                // Reset textarea height
+                postTextarea.style.height = 'auto';
+            }
+        });
+
+        // Event listener for Enter key (posts when user presses Ctrl+Enter)
+        postTextarea.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                postButton.click();
+                e.preventDefault();
+            }
+        });
+
+        // Auto-expand textarea
+        postTextarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+
+        // Initialize with a sample post
+        window.onload = () => {
+            const samplePost = createPost("Welcome to Twitter Clone! 🚀 Start posting something!");
+            postsFeed.appendChild(samplePost);
+        };
+    </script>
+</body>
+</html>
